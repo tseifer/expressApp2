@@ -1,0 +1,21 @@
+{
+  "name": "expressapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dayjs": "^1.9.4",
+    "express": "^4.17.1",
+    "uuid": "^8.3.1"
+  }
+}
