@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-let members = [{id: 1, name: 'David', email: 'david@gmail.com', status: 'active'}, {id: 2, name: 'Bob', email: 'bobbb@gmail.com', status: 'inactive'}];
+let members = [{id: "1", name: 'David', email: 'david@gmail.com', status: 'active'}, {id: "2", name: 'Bob', email: 'bobbb@gmail.com', status: 'inactive'}];
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(logger)
@@ -20,8 +20,8 @@ app.use(logger)
 app.get('/api/members', (req, res) => {
 	res.json(members)
 })
-app.get('/api/members/:id', (req, res) => {
-	let requiredId = parseInt(req.params.id);
+app.get('/api/members/:id', (req, res) => { // if the request is localhost:5000/api/members/5
+	let requiredId = req.params.id; // "5"
 	const found = members.find(member => member.id === requiredId);
 	if (found) {
 		res.json(found);
@@ -44,12 +44,29 @@ app.post('/api/members', (req, res) => {
 });
 
 app.delete('/api/members/:id', (req, res) => {
-	// delete the membert with such id from the members array
-	// return (in the result's body) the member that we deleted
+	const idToDelete = req.params.id;
+	const indexToDelete = members.findIndex(m => m.id === idToDelete);
+	if (indexToDelete < 0)  {
+		res.status(400).json({msg: `no member with id ${idToDelete}`});
+	} else {
+		//const deletedMember = members[indexToDelete];
+		const deletedMember = members.splice(indexToDelete, 1)[0];
+		res.json(deletedMember);
+	}
 })
 
 app.put('/api/members/:id', (req, res) => {
-	//read the body from the request, and change update only the specific attributes that were defined in the body.
+	const idToUpdate = req.params.id;
+	const memberToUpdate = members.find(m => m.id === idToUpdate);
+	if (memberToUpdate)
+	{
+		Object.assign(memberToUpdate, req.body);
+		res.json(memberToUpdate);
+	} else {
+		res.status(400).json({msg: `no member with id ${idToUpdate}`});
+	}
+	
+	//read the body from the request, and update only the specific attributes that were defined in the body.
 	// For example if for id 2 we have body of {"name": "kuku"} then we only update the name of the member that has id === 2
 	// and then return the specific member in the response
 	
